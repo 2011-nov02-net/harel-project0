@@ -1,50 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Store
 {
     interface IStore
     {
-        void LoadInventory(string path);
-        void WriteInventory(string path);
-        void placeOrders(Order order);
+        void placeOrder(Order order);
         void addCustomer(Customer customer);
-        string orderHistory();
+        IEnumerable<Order> orderHistory(Location location);
+        IEnumerable<Order> orderHistory(Customer customer);
     }
 
     public class StoreFront : IStore
     {
-        public StoreFront () {
-            List<Location> locations = new List<Location>();
-            List<Order> orders = new List<Order>();
-            List<Customer> customers = new List<Customer>();
+        private List<Location> locations;
+        private List<Order> orders;
+        List<Customer> customers;
+        List<Item> items;
+
+        public List<Order> Orders
+        {
+            get => orders;
+            set
+            {
+                List<Order> oldOrders = orders;
+                orders = value;
+                // location??
+            }
         }
-        private List<Location> readLocations(string path) {
+
+        public StoreFront () {
+            locations = new List<Location>();
+            Orders = new List<Order>();
+            customers = new List<Customer>();
+        }
+        private List<Location> readLocations(string path) 
+        {
+            throw new NotImplementedException();
+        }
+        private List<Location> writeLocations(string path) 
+        {
             throw new NotImplementedException();
         }
          public void addCustomer(Customer customer)
         {
-            throw new NotImplementedException();
+            this.customers.Add(customer);
         }
 
-        public void LoadInventory(string path)
+        public List<Order> orderHistory(Customer customer)
         {
-            throw new NotImplementedException();
+            return (List<Order>) from order in this.Orders
+                where order.OrderCustomer == customer.CustomerId
+                select order;
         }
-
-        public string orderHistory()
+        public void placeOrder(Order order)
         {
-            throw new NotImplementedException();
+            var location = (from loc in locations
+                where loc.LocationId == order.OrderLocation select loc).First();
+            foreach (KeyValuePair<Item, uint> itemCount in order.Contents) 
+            {
+                if (location.Inventory[itemCount.Key] < itemCount.Value) 
+                {
+                    throw new ArgumentException("No inventory to fill order");
+                }
+                else location.Inventory[itemCount.Key] -= itemCount.Value;
+            }
+            this.Orders.Add(order);
         }
-
-        public void placeOrders(Order order)
+        public List<Order> orderHistory(Location location) 
         {
-            throw new NotImplementedException();
-        }
-
-        public void WriteInventory(string path)
-        {
-            throw new NotImplementedException();
+            return (List<Order>) from order in this.Orders
+                where order.OrderLocation == location.LocationId
+                select order;
         }
     }
 }

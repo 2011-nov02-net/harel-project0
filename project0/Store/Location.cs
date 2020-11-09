@@ -5,8 +5,8 @@ namespace Store
     public class Location
     {
         public readonly uint locationId;
-        Dictionary<uint, uint> inventory;
+        private Dictionary<Item, uint> inventory;
         public uint LocationId => locationId;
-        internal Dictionary<uint, uint> Inventory { get => inventory; set => inventory = value; }
+        internal Dictionary<Item, uint> Inventory { get => inventory; set => inventory = value; }
     }
 }
