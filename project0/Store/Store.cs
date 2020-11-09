@@ -8,8 +8,8 @@ namespace Store
     {
         void placeOrder(Order order);
         void addCustomer(Customer customer);
-        IEnumerable<Order> orderHistory(Location location);
-        IEnumerable<Order> orderHistory(Customer customer);
+        List<Order> orderHistory(Location location);
+        List<Order> orderHistory(Customer customer);
     }
 
     public class StoreFront : IStore
@@ -19,16 +19,7 @@ namespace Store
         List<Customer> customers;
         List<Item> items;
 
-        public List<Order> Orders
-        {
-            get => orders;
-            set
-            {
-                List<Order> oldOrders = orders;
-                orders = value;
-                // location??
-            }
-        }
+        public List<Order> Orders { get => orders; set => orders = value; }
 
         public StoreFront () {
             locations = new List<Location>();
@@ -54,6 +45,12 @@ namespace Store
                 where order.OrderCustomer == customer.CustomerId
                 select order;
         }
+        public List<Order> orderHistory(Location location) 
+        {
+            return (List<Order>) from order in this.Orders
+                where order.OrderLocation == location.LocationId
+                select order;
+        }
         public void placeOrder(Order order)
         {
             var location = (from loc in locations
@@ -67,12 +64,6 @@ namespace Store
                 else location.Inventory[itemCount.Key] -= itemCount.Value;
             }
             this.Orders.Add(order);
-        }
-        public List<Order> orderHistory(Location location) 
-        {
-            return (List<Order>) from order in this.Orders
-                where order.OrderLocation == location.LocationId
-                select order;
         }
     }
 }
