@@ -29,7 +29,7 @@ namespace StoreConsoleUI
         };
         static void Main(string[] args)
         {
-            var store = new Business();
+            var store = new StoreFront();
         }
         static void Menu() {
             while (true)

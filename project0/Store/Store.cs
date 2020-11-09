@@ -1,30 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Store
 {
     interface IStore
     {
-        void LoadInventoryCSV(string path);
-        void WriteInventoryCSV(string path);
-        void LoadOrdersCSV(string path);
-        void WriteOrdersCSV(string path);
+        void LoadInventory(string path);
+        void WriteInventory(string path);
         void placeOrders(Order order);
         void addCustomer(Customer customer);
         string orderHistory();
     }
-    public class Business : IStore
+
+    public class StoreFront : IStore
     {
-        public void addCustomer(Customer customer)
+        public StoreFront () {
+            List<Location> locations = new List<Location>();
+            List<Order> orders = new List<Order>();
+            List<Customer> customers = new List<Customer>();
+        }
+        private List<Location> readLocations(string path) {
+            throw new NotImplementedException();
+        }
+         public void addCustomer(Customer customer)
         {
             throw new NotImplementedException();
         }
 
-        public void LoadInventoryCSV(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LoadOrdersCSV(string path)
+        public void LoadInventory(string path)
         {
             throw new NotImplementedException();
         }
@@ -39,12 +42,7 @@ namespace Store
             throw new NotImplementedException();
         }
 
-        public void WriteInventoryCSV(string path)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void WriteOrdersCSV(string path)
+        public void WriteInventory(string path)
         {
             throw new NotImplementedException();
         }
