@@ -20,11 +20,13 @@ namespace Store
         List<Item> items;
 
         public List<Order> Orders { get => orders; set => orders = value; }
+        public List<Location> Locations { get => locations; set => locations = value; }
+        public List<Customer> Customers { get => customers; set => customers = value; }
 
         public StoreFront () {
-            locations = new List<Location>();
+            Locations = new List<Location>();
             Orders = new List<Order>();
-            customers = new List<Customer>();
+            Customers = new List<Customer>();
         }
         private List<Location> readLocations(string path) 
         {
@@ -36,7 +38,12 @@ namespace Store
         }
          public void addCustomer(Customer customer)
         {
-            this.customers.Add(customer);
+            this.Customers.Add(customer);
+        }
+        public List<Customer> getCustomersByName(string name) {
+            return (List<Customer>) from customer in this.Customers
+                where customer.CustomerName == name
+                select customer;
         }
 
         public List<Order> orderHistory(Customer customer)
@@ -53,7 +60,7 @@ namespace Store
         }
         public void placeOrder(Order order)
         {
-            var location = (from loc in locations
+            var location = (from loc in Locations
                 where loc.LocationId == order.OrderLocation select loc).First();
             foreach (KeyValuePair<Item, uint> itemCount in order.Contents) 
             {
