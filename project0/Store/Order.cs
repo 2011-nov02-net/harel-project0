@@ -1,13 +1,19 @@
 using System.Collections.Generic;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Store
 {
-    class Item
+    public class Item
     { 
+        [JsonIgnore]
         private static ulong itemTally;
+        
+        [JsonPropertyName("itemId")]
         readonly ulong itemId;
+        [JsonPropertyName("itemName")]
         private readonly string itemName;
-        public Item(string itemName)
+        Item(string itemName)
         {
             this.itemName = itemName;
             this.itemId = itemTally++;
@@ -19,11 +25,16 @@ namespace Store
     }
     public class Order
     {
+        [JsonIgnore]
+        private static ulong orderTally;
+        [JsonPropertyName("contents")]
         private Dictionary<Item, uint> contents;
+        [JsonPropertyName("orderId")]
         private readonly uint orderId;
+        [JsonPropertyName("orderCustomer")]
 
         private readonly uint orderCustomer;
-
+        [JsonPropertyName("orderLocation")]
         private readonly uint orderLocation;
 
         internal Dictionary<Item, uint> Contents { get => contents; set => contents = value; }
@@ -42,6 +53,18 @@ namespace Store
                 result += $"{entry.Key.ItemName}: {entry.Value},";
             }
             return result;
+        }
+        public Order(List<Item> items, Location loc, Customer cust) 
+        {
+            this.orderId = (uint) orderTally++;
+            this.orderLocation = loc.LocationId;
+            this.orderCustomer = cust.CustomerId;
+            var dct = new Dictionary<Item, uint>();
+            foreach (Item item in items) {
+                if (dct.ContainsKey(item)) dct[item]++;
+                else dct.Add(item, 1);
+            }
+            this.contents = dct;
         }
     }
 }

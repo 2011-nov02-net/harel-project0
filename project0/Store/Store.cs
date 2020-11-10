@@ -22,6 +22,7 @@ namespace Store
         public List<Order> Orders { get => orders; set => orders = value; }
         public List<Location> Locations { get => locations; set => locations = value; }
         public List<Customer> Customers { get => customers; set => customers = value; }
+        public List<Item> Items { get => items; set => items = value; }
 
         public StoreFront () {
             Locations = new List<Location>();

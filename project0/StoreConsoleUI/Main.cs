@@ -76,7 +76,10 @@ namespace StoreConsoleUI
                     try {
                         var location = store.Locations.Find(location => location.LocationId == myLocationId);
                         var orders = store.orderHistory(location);
-                        // display orders
+                        foreach (var order in orders)
+                        {
+                            Console.WriteLine(order.ToString());
+                        }
                     } catch (ArgumentNullException) {
                         Console.WriteLine("No such location on record.");
                     }
@@ -87,13 +90,41 @@ namespace StoreConsoleUI
                     try {
                         var customer = store.Customers.Find(customer => customer.CustomerId == myCustomerId);
                         var orders = store.orderHistory(customer);
-                        // Display orders
+                        foreach (var order in orders)
+                        {
+                            Console.WriteLine(order.ToString());
+                        }
                     } catch (ArgumentNullException) {
                         Console.WriteLine("No such location on record.");
                     }
                     break;
                 case 5:
-                    // take down order details on console
+                    try
+                    {
+                        Console.WriteLine("Enter customer id.");
+                        var customerId = Convert.ToInt32(Console.ReadLine());
+                        var customer = store.Customers.Find(cust => cust.CustomerId == customerId);
+                        Console.WriteLine("Enter location id.");
+                        var locationId = Convert.ToInt32(Console.ReadLine());
+                        var location = store.Locations.Find(loc => loc.LocationId == locationId);
+                        Console.WriteLine("Enter items by id on each line (stop to stop).");
+                        var input = "";
+                        var items = new List<Item>();
+                        while (input != "stop")
+                        {
+                            input = Console.ReadLine();
+                            if (input != "stop") {
+                                var itemId = Convert.ToInt32(input);
+                                var item = store.Items.Find(item => (int) item.ItemId == itemId);
+                                items.Add(item);
+                            }
+                        }
+                        var order = new Order(items, location, customer);
+                        store.placeOrder(order);
+                    }
+                    catch (Exception) {
+                        Console.WriteLine("Invalid Input");
+                    }
                     break;
                 default:
                     throw new ArgumentException();
