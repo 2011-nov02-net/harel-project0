@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Linq;
 
@@ -25,20 +27,36 @@ namespace Store
         public List<Location> Locations { get => locations; set => locations = value; }
         public List<Customer> Customers { get => customers; set => customers = value; }
         public List<Item> Items { get => items; set => items = value; }
+        private const string ordersDataPath = "orders.json";
+        private const string customersDataPath = "customers.json";
+        private const string locationsDataPath = "locations.json";
+        private const string itemsDataPath = "items.json";
 
         public StoreFront () {
-            Locations = new List<Location>();
-            Orders = new List<Order>();
-            Customers = new List<Customer>();
+            
         }
-        private List<Location> readLocations(string path) 
+        private void loadData() 
         {
-            string jsonString = JsonSerializer.Serialize(this.locations);
-            throw new NotImplementedException();
+            try
+            {
+                locations = JsonSerializer.Deserialize<List<Location>>(File.ReadAllText(locationsDataPath));
+                orders = JsonSerializer.Deserialize<List<Order>>(File.ReadAllText(ordersDataPath));
+                customers = JsonSerializer.Deserialize<List<Customer>>(File.ReadAllText(customersDataPath));
+                items = JsonSerializer.Deserialize<List<Item>>(File.ReadAllText(itemsDataPath));
+            }
+            catch (Exception)
+            {
+                Locations = new List<Location>();
+                Orders = new List<Order>();
+                Customers = new List<Customer>();
+            }
         }
-        private List<Location> writeLocations(string path) 
+        private void storeData(string pathOrders) 
         {
-            throw new NotImplementedException();
+            File.WriteAllText(ordersDataPath, JsonSerializer.Serialize(this.orders)); 
+            File.WriteAllText(locationsDataPath, JsonSerializer.Serialize(this.locations)); 
+            File.WriteAllText(customersDataPath, JsonSerializer.Serialize(this.customers));
+            File.WriteAllText(itemsDataPath, JsonSerializer.Serialize(this.items));
         }
          public void addCustomer(Customer customer)
         {
