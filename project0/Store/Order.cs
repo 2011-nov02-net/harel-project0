@@ -6,12 +6,8 @@ namespace Store
 {
     public class Item
     { 
-        [JsonIgnore]
         private static ulong itemTally;
-        
-        [JsonPropertyName("itemId")]
         readonly ulong itemId;
-        [JsonPropertyName("itemName")]
         private readonly string itemName;
         Item(string itemName)
         {
@@ -25,16 +21,11 @@ namespace Store
     }
     public class Order
     {
-        [JsonIgnore]
         private static ulong orderTally;
-        [JsonPropertyName("contents")]
         private Dictionary<Item, uint> contents;
-        [JsonPropertyName("orderId")]
         private readonly uint orderId;
-        [JsonPropertyName("orderCustomer")]
 
         private readonly uint orderCustomer;
-        [JsonPropertyName("orderLocation")]
         private readonly uint orderLocation;
 
         internal Dictionary<Item, uint> Contents { get => contents; set => contents = value; }
