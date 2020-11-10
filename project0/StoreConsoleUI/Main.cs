@@ -31,6 +31,7 @@ namespace StoreConsoleUI
         static void Main(string[] args)
         {
             store = new StoreFront();
+            Menu();
         }
         static void Menu() {
             while (true)
@@ -42,7 +43,7 @@ namespace StoreConsoleUI
                     return;
                 }
                 if (activityCode >= 0 && activityCode < activities.Count) {
-                    throw new NotImplementedException("Not implemented.");
+                    exectuteCode(activityCode);
                 } else Console.WriteLine("That is not a valid option.");
             }
         }
@@ -56,7 +57,11 @@ namespace StoreConsoleUI
                 case 1:
                     Console.WriteLine("Enter customer name.");
                     var customers = store.getCustomersByName(Console.ReadLine());
-                    // do stuff to display customers
+                    foreach (var customer in customers) 
+                    {
+                        Console.WriteLine(customer);
+                    }
+                    store.save();
                     break;
                 case 2: 
                     Console.WriteLine("Enter order id.");

@@ -4,32 +4,33 @@ namespace Store
 {
     public class Item
     { 
-        private static ulong itemTally;
-        readonly ulong itemId;
+        private static uint itemTally;
+        readonly uint itemId;
         private readonly string itemName;
-        Item(string itemName)
+        public Item(string itemName)
         {
             this.itemName = itemName;
             this.itemId = itemTally++;
-            itemTally++;
         }
         public string ItemName => itemName;
 
-        public ulong ItemId => itemId;
+        public uint ItemId => itemId;
         public override string ToString() {
             return this.itemName.ToString();
         }
     }
     public class Order
     {
-        private static ulong orderTally;
-        private Dictionary<Item, uint> contents;
+        private static List<Item> items;
+        // Convert all Dictionaries of items to dictonaries of itemIds
+        private static uint orderTally;
+        private Dictionary<uint, uint> contents;
         private readonly uint orderId;
 
         private readonly uint orderCustomer;
         private readonly uint orderLocation;
 
-        internal Dictionary<Item, uint> Contents { get => contents; set => contents = value; }
+        public Dictionary<uint, uint> Contents { get => contents; set => contents = value; }
 
         public uint OrderCustomer => orderCustomer;
 
@@ -37,12 +38,16 @@ namespace Store
 
         public uint OrderId => orderId;
 
+        public static List<Item> Items { get => items; set => items = value; }
+
         public override string ToString() {
             var result = "";
-            foreach(KeyValuePair<Item, uint> entry in this.Contents) 
+            foreach(var entry in this.Contents) 
             {
-                if (entry.Value == 0) continue;
-                result += entry.Key.ToString()+$": {entry.Value},";
+                if (entry.Value != 0) 
+                {
+                    result += items.Find(item => item.ItemId == entry.Key).ToString() + $": {entry.Value},";
+                }
             }
             return result;
         }
@@ -51,10 +56,10 @@ namespace Store
             this.orderId = (uint) orderTally++;
             this.orderLocation = loc.LocationId;
             this.orderCustomer = cust.CustomerId;
-            var dct = new Dictionary<Item, uint>();
-            foreach (Item item in items) {
-                if (dct.ContainsKey(item)) dct[item]++;
-                else dct.Add(item, 1);
+            var dct = new Dictionary<uint, uint>();
+            foreach (var item in items) {
+                if (dct.ContainsKey(item.ItemId)) dct[item.ItemId]++;
+                else dct.Add(item.ItemId, 1);
             }
             this.contents = dct;
         }

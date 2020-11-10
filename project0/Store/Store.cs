@@ -33,7 +33,17 @@ namespace Store
         private const string itemsDataPath = "items.json";
 
         public StoreFront () {
-            
+            loadData();
+            //items.Add(new Item("apple"));
+            //items.Add(new Item("orange"));
+            //items.Add(new Item("banana"));
+            Order.Items = this.items;
+            var loc = new Location();
+            foreach (var item in items) {
+                loc.Inventory.Add(item.ItemId, 300);
+            }
+            locations.Add( loc );
+            storeData();
         }
         private void loadData() 
         {
@@ -46,45 +56,50 @@ namespace Store
             }
             catch (Exception)
             {
-                Locations = new List<Location>();
-                Orders = new List<Order>();
-                Customers = new List<Customer>();
+                Console.WriteLine("Data Loading Failed.");
+                locations = new List<Location>();
+                orders = new List<Order>();
+                customers = new List<Customer>();
+                items = new List<Item>();
             }
         }
-        private void storeData(string pathOrders) 
+        private void storeData() 
         {
             File.WriteAllText(ordersDataPath, JsonSerializer.Serialize(this.orders)); 
             File.WriteAllText(locationsDataPath, JsonSerializer.Serialize(this.locations)); 
             File.WriteAllText(customersDataPath, JsonSerializer.Serialize(this.customers));
             File.WriteAllText(itemsDataPath, JsonSerializer.Serialize(this.items));
         }
+        public void save() {
+            storeData();
+        }
          public void addCustomer(Customer customer)
         {
             this.Customers.Add(customer);
         }
         public List<Customer> getCustomersByName(string name) {
-            return (List<Customer>) from customer in this.Customers
+            return (from customer in this.Customers
                 where customer.CustomerName == name
-                select customer;
+                select customer).ToList();
         }
 
         public List<Order> orderHistory(Customer customer)
         {
-            return (List<Order>) from order in this.Orders
+            return (from order in this.Orders
                 where order.OrderCustomer == customer.CustomerId
-                select order;
+                select order).ToList();
         }
         public List<Order> orderHistory(Location location) 
         {
-            return (List<Order>) from order in this.Orders
+            return (from order in this.Orders
                 where order.OrderLocation == location.LocationId
-                select order;
+                select order).ToList();
         }
         public void placeOrder(Order order)
         {
             var location = (from loc in Locations
                 where loc.LocationId == order.OrderLocation select loc).First();
-            foreach (KeyValuePair<Item, uint> itemCount in order.Contents) 
+            foreach (var itemCount in order.Contents) 
             {
                 if (location.Inventory[itemCount.Key] < itemCount.Value) 
                 {
