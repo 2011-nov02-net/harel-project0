@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.Json.Serialization;
 using System.Linq;
 
 namespace Store
@@ -31,6 +33,7 @@ namespace Store
         }
         private List<Location> readLocations(string path) 
         {
+            string jsonString = JsonSerializer.Serialize(this.locations);
             throw new NotImplementedException();
         }
         private List<Location> writeLocations(string path) 

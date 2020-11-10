@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace Store
 {
@@ -18,6 +16,9 @@ namespace Store
         public string ItemName => itemName;
 
         public ulong ItemId => itemId;
+        public override string ToString() {
+            return this.itemName.ToString();
+        }
     }
     public class Order
     {
@@ -41,7 +42,7 @@ namespace Store
             foreach(KeyValuePair<Item, uint> entry in this.Contents) 
             {
                 if (entry.Value == 0) continue;
-                result += $"{entry.Key.ItemName}: {entry.Value},";
+                result += entry.Key.ToString()+$": {entry.Value},";
             }
             return result;
         }
