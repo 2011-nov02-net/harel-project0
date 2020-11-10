@@ -1,28 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Store
 {
-    public class Item
-    { 
-        private static uint itemTally;
-        readonly uint itemId;
-        private readonly string itemName;
-        public Item(string itemName)
-        {
-            this.itemName = itemName;
-            this.itemId = itemTally++;
-        }
-        public string ItemName => itemName;
-
-        public uint ItemId => itemId;
-        public override string ToString() {
-            return this.itemName.ToString();
-        }
-    }
     public class Order
     {
         private static List<Item> items;
-        // Convert all Dictionaries of items to dictonaries of itemIds
         private static uint orderTally;
         private Dictionary<uint, uint> contents;
         private readonly uint orderId;
@@ -30,7 +14,29 @@ namespace Store
         private readonly uint orderCustomer;
         private readonly uint orderLocation;
 
+        [JsonIgnore]
         public Dictionary<uint, uint> Contents { get => contents; set => contents = value; }
+        public Dictionary<string, uint> ContentsS 
+        { 
+            get 
+            {
+                var result = new Dictionary<string, uint>();
+                foreach (var kv in contents)
+                {
+                    result.Add(kv.Key.ToString(), kv.Value);
+                }
+                return result;
+            }
+            set 
+            {
+                var result = new Dictionary<uint, uint>();
+                foreach (var kv in value) 
+                {
+                    result.Add(Convert.ToUInt32(kv.Key), kv.Value);
+                }
+                contents = result;
+            } 
+        }
 
         public uint OrderCustomer => orderCustomer;
 
