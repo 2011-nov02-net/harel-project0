@@ -21,6 +21,7 @@ namespace Store.Tests
                 }
             }
         }
+        [Fact]
         public void CustomerIdsUnique()
         {
             for (int i = 0; i < store.Customers.Count; ++i) {
