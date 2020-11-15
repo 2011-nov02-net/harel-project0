@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -13,11 +13,12 @@ namespace Business
     bool doesExistCustomerById(int customerId);
     bool doesExistLocationById(int locationId);
     bool doesExistOrderById(int orderId);
+    bool doesExistItemById(int itemId);
     IEnumerable<Sorder> orderHistoryByLocationId(int locationId);
     IEnumerable<Sorder> orderHistoryByCustomerId(int customerId);
     void save();
   }
-  /// documentation with <summary> XML comments on all public types and members 
+  /// documentation with <summary> XML comments on all public types and members
   /// optional: documentation with <params> and <return> on public methods
   public class Store : IStore
   {
@@ -43,6 +44,9 @@ namespace Business
     public bool doesExistOrderById(int orderId) {
       return context.Sorder.Where(order => order.Id == orderId).toList().Length() != 0;
     }
+    public bool doesExistItemById(int itemId) {
+      return context.Item.Where(item => item.Id == itemId).toList().Length() != 0;
+    }
     public void placeOrder(int customerId, int locationId, IEnumerable<int> itemIds){
       var myOrder = new Order{ LocationId = locationId, CustomerId = customerId };
       // OrderId should be set automatically by the context? look up Identity handling in EF
@@ -52,6 +56,7 @@ namespace Business
         var myOrderItem = new OrderItem { OrderId = myOrder.OrderId, ItemId = kv.Key, ItemCount = kv.Value };
         context.Add(myOrderItem);
       }
+      context.SaveChanges();
     }
     public void addCustomerByName(string name) {
       var myCustomer = new Customer { Name = name};
@@ -63,30 +68,28 @@ namespace Business
     }
     public IEnumerable<Sorder> orderHistoryByLocationId(int locationId) {
       throw new NotImplementedException();
-      /*
-      return from order in context.Sorder where order.LocationId == locationId select order
-      */
+      return from order in context.Sorder where order.LocationId == locationId select order;
     }
     public IEnumerable<Sorder> orderHistoryByCustomerId(int customerId) {
       throw new NotImplementedException();
-      /*
-      return from order in context.Sorder where order.CustomerId == customerId select order
-      */
+      return from order in context.Sorder where order.CustomerId == customerId select order;
     }
   }
   public static class DisplayEntity { // implement toString extension method for SOrder class
     public static override string ToString(this Sorder order)
-    { // iterate through orderItems and build string
+    {
       throw new NotImplementedException();
-      // $"{order.Id}, {order.TimePlaced}"
-      /* from kv in OrderItem where kv.Order == order
-      select $"{kv.Item}: {kv.itemCount}"
-      */
+      return $"{Id: {order.Id}, {order.TimePlaced}" + String.Join(" ",
+        OrderItem.Where(x => x.Order == order).Select(x => $"{x.Item}: {x.itemCount}") );
+      //(from kv in OrderItem where kv.Order == order
+      //select $"{kv.Item}: {kv.itemCount}"
+      // iterate through orderItems and build string
+      
     }
     public static override string ToString(this Item item)
     {
       throw new NotImplementedException();
-      // return item.Name;
+      return item.Name;
     }
   }
 }

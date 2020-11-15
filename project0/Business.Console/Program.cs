@@ -117,18 +117,25 @@ namespace Business.Console
               var myCustomerId = Convert.ToInt32(Console.ReadLine());
               Console.WriteLine("Enter location id.");
               var myLocationId = Convert.ToInt32(Console.ReadLine());
+              if (!store.doesExistLocationById(myLocationId)) Console.Writeline("Location Id not found.");
               Console.WriteLine("Enter items by id on each line (stop to stop).");
-              var input = "";
+              var input = Console.ReadLine();
               var myItemIds = new List<int>();
               while (input != "stop")
               {
+                  try {
+                    myItemId = Convert.ToInt32(input);
+                    if (store.doesExistItemById(myitemId)) myItemIds.Add(myItemId);
+                    else Console.Writeline("Item Id not found.");
+                  } catch (Exception) {
+                    Console.Writeline("Invalid input, is that an item id?");
+                  }
                   input = Console.ReadLine();
-                  if (input != "stop") myItemIds.Add(Convert.ToInt32(input));
               }
               store.placeOrder(myCustomerId, myLocationId, (IEnumerable<int>) myItemIds);
           }
           catch (Exception) {
-              Console.WriteLine("Invalid Input");
+              Console.WriteLine("Invalid Input.");
           }
         }
     }
