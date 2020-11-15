@@ -62,19 +62,30 @@ namespace Business
       }
       IEnumerable<Sorder> orderHistoryByLocationId(int locationId) {
         throw new NotImplementedException();
+        /*
+        return from order in context.Sorder where order.LocationId == locationId select order
+        */
       }
       IEnumerable<Sorder> orderHistoryByCustomerId(int customerId) {
         throw new NotImplementedException();
+        /*
+        return from order in context.Sorder where order.CustomerId == customerId select order
+        */
       }
     }
     public static class DisplayEntity { // implement toString extension method for SOrder class
       public static override string ToString(this Sorder order)
       { // iterate through orderItems and build string
-        throw new NotImplementedException();
+        throw new NotImplementedException(); 
+        // $"{order.Id}, {order.TimePlaced}"
+        /* from kv in OrderItem where kv.Order == order 
+        select $"{kv.Item}: {kv.itemCount}"
+        */
       }
       public static override string ToString(this Item item)
       {
         throw new NotImplementedException();
+        // return item.Name;
       }
     }
 }
