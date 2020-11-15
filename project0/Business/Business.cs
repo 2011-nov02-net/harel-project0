@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Linq;
 using System.IO;
 using System.Text;
 
@@ -26,7 +27,7 @@ namespace Business
         try {
           connectionString = File.ReadAllText(connectionStringPath); // strip text
         } catch (IOException) {
-          Console.WriteLine($"required file {path} not found.");
+          Console.WriteLine($"required file {connectionStringPath} not found.");
         }
         var optionsBuilder = new DbContextOptionsBuilder<project0Context>().UseSqlServer(connectionString);
         //optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Information);
@@ -42,19 +43,19 @@ namespace Business
         return context.Sorder.Where(order => order.Id == orderId).toList().Length() != 0;
       }
       void placeOrder(int customerId, int locationId, IEnumerable<int> itemIds){
-        var myOrder = new context.Order{ LocationId = locationId, CustomerId = customerId };
+        var myOrder = new Order{ LocationId = locationId, CustomerId = customerId };
         // OrderId should be set automatically by the context? look up Identity handling in EF
         context.Sorder.add(myOrder);
-        //var groups = from s in stuff group s by s into g
-        //  select new { Stuff = g.Key, Count = g.Count()
-        foreach (var kv in groups) {
-          var myOrderItem = new OrderItem { OrderId = myOrder.Id, ItemId = kv.Key, ItemCount = kv.Value };
+        context.SaveChanges();
+        foreach (var kv in itemIds.GroupBy(x => x).Count()) {
+          var myOrderItem = new OrderItem { OrderId = myOrder.OrderId, ItemId = kv.Key, ItemCount = kv.Value };
           context.Add(myOrderItem);
         }
       }
       void addCustomerByName(string name) {
-        var myCustomer = new Customer { name = name}
+        var myCustomer = new Customer { Name = name}
         context.Customer.add(myCustomer);
+        context.SaveChanges();
       }
       void save() {
         context.SaveChanges();
