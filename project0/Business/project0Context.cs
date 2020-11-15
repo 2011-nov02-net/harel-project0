@@ -74,7 +74,7 @@ namespace Business
             modelBuilder.Entity<OrderItem>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ItemId })
-                    .HasName("PK__OrderIte__64B7B3F793438D22");
+                    .HasName("PK__OrderIte__64B7B3F7587E7CBE");
 
                 entity.ToTable("OrderItem", "Store");
 
@@ -82,33 +82,34 @@ namespace Business
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(d => d.ItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__OrderItem__ItemI__76969D2E");
+                    .HasConstraintName("FK__OrderItem__ItemI__123EB7A3");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__OrderItem__Order__75A278F5");
+                    .HasConstraintName("FK__OrderItem__Order__114A936A");
             });
 
             modelBuilder.Entity<Sorder>(entity =>
             {
-                entity.HasKey(e => e.OrderId)
-                    .HasName("PK__SOrder__C3905BCFA72531DF");
-
                 entity.ToTable("SOrder", "Store");
+
+                entity.Property(e => e.TimePlaced)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(sysdatetime())");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Sorders)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SOrder__Customer__6FE99F9F");
+                    .HasConstraintName("FK__SOrder__Customer__0D7A0286");
 
                 entity.HasOne(d => d.Location)
                     .WithMany(p => p.Sorders)
                     .HasForeignKey(d => d.LocationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SOrder__Location__6EF57B66");
+                    .HasConstraintName("FK__SOrder__Location__0C85DE4D");
             });
 
             OnModelCreatingPartial(modelBuilder);

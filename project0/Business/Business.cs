@@ -53,7 +53,7 @@ namespace Business
         }
       }
       void addCustomerByName(string name) {
-        var myCustomer = new Customer { Name = name}
+        var myCustomer = new Customer { Name = name};
         context.Customer.add(myCustomer);
         context.SaveChanges();
       }
