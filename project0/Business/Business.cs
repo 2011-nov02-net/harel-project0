@@ -93,7 +93,17 @@ namespace Business
     }
     public Sorder findOrderById(int orderId) 
     {
-      return ((DbSet<Sorder>)Orders).Find(orderId);   
+      return ((DbSet<Sorder>)Orders)
+      .Include(o => o.OrderItems).ThenInclude(io => io.Item)
+      .Include(o => o.Customer).ThenInclude(c => c.Name)
+      .Include(o => o.Customer).ThenInclude(c => c.Id)
+      .Include(o => o.Location).ThenInclude(c => c.Name)
+      .Include(o => o.Location).ThenInclude(c => c.Id)
+      .Where(o => o.Id == orderId).First();   
+      /*
+      .Include(o => o.Location).ThenInclude(l => l.Name)
+      .Include(o => o.Customer).ThenInclude(c => c.Name)
+      */
     }
     public void addCustomerByName(string name) {
       var myCustomer = new Customer { Name = name};
@@ -105,7 +115,9 @@ namespace Business
     }
     public IEnumerable<Sorder> orderHistoryByLocationId(int locationId) {
       if (doesExistLocationById(locationId)) {
-        return (IEnumerable<Sorder>) Locations.Where(x => x.Id == locationId).First().Sorders;
+        return (IEnumerable<Sorder>) ((DbSet<Location>)Locations)
+        .Include(l => l.Sorders).ThenInclude(o => o.OrderItems).ThenInclude(oi => oi.Item)
+        .Where(x => x.Id == locationId).First().Sorders.ToList();
       } else {
         throw new ArgumentException("Location Id not found.");
       }
@@ -113,7 +125,9 @@ namespace Business
     }
     public IEnumerable<Sorder> orderHistoryByCustomerId(int customerId) {
       if (doesExistCustomerById(customerId)) {
-        return (IEnumerable<Sorder>) ((DbSet<Customer>)Customers).Find(customerId).Sorders;
+        return (IEnumerable<Sorder>) ((DbSet<Customer>)Customers)
+        .Include(c => c.Sorders).ThenInclude(o => o.OrderItems).ThenInclude(oi => oi.Item)
+        .Where(x => x.Id == customerId).First().Sorders.ToList();
       }
       else {
         throw new ArgumentException("Customer Id not found.");
@@ -124,41 +138,20 @@ namespace Business
   public partial class Sorder {
     public override string ToString()
     {
-        return $"Id: {this.Id}, {this.TimePlaced}" + String.Join(", ",
-        this.OrderItems.Select(x => $"{x.Item}: {x.ItemCount}") );
-    }
+        return $"Id: {this.Id}, {this.TimePlaced}\n" + String.Join(", ",
+        this.OrderItems.Select(x => $"{x.Item}: {x.ItemCount}").ToList() );
+        // Location: {this.Location.Name}, Customer:{this.Customer.Name}
+    } 
   }
   public partial class Item {
-    public override string ToString()
-    {
+    public override string ToString() {
         return this.Name+$" ({this.Id})";
     }
   }
   public partial class Customer {
-    public override string ToString()
-    {
-        return $"id:{this.Id},\t Name:{this.Name}";
+    public override string ToString() {
+      return $"id:{this.Id},\t Name:{this.Name}";
     }
   
   }
 }
-
-/*
-public static class DisplayEntity { // implement toString extension method for SOrder class
-    public static string ToString(this Sorder order)
-    {
-      //throw new NotImplementedException();
-      return $"Id: {order.Id}, {order.TimePlaced}" + String.Join(", ",
-        order.OrderItems.Select(x => $"{x.Item}: {x.ItemCount}") );
-      //(from kv in OrderItem where kv.Order == order
-      //select $"{kv.Item}: {kv.itemCount}"
-      // iterate through orderItems and build string
-      
-    }
-    public static string ToString(this Item item)
-    {
-      //throw new NotImplementedException();
-      return item.Name;
-    }
-  }
-*/

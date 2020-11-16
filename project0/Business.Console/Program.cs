@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Business;
+using System.Linq;
 
 
 namespace Business.ConsoleUI
@@ -82,10 +83,13 @@ namespace Business.ConsoleUI
           try {
               Console.WriteLine("Enter order id.");
               var myOrderId = Convert.ToInt32(Console.ReadLine());
+              var myOrder = store.findOrderById(myOrderId);
               Console.WriteLine($"Order Id: {myOrderId}");
               Console.WriteLine("Contents");
-              Console.WriteLine(store.findOrderById(myOrderId));
-          } catch (ArgumentNullException) {
+              Console.WriteLine(myOrder);
+          } catch (FormatException) {
+              Console.WriteLine("Invalid formalt.");
+          } catch (InvalidOperationException) {
               Console.WriteLine("No such order on record.");
           }
         }
@@ -94,9 +98,12 @@ namespace Business.ConsoleUI
           try {
               Console.WriteLine("Enter store location id.");
               var myLocationId = Convert.ToInt32(Console.ReadLine());
-              foreach (var order in store.orderHistoryByLocationId(myLocationId)) Console.WriteLine(order);
+              var myOrders = store.orderHistoryByLocationId(myLocationId).ToList();
+              foreach (var order in myOrders) Console.WriteLine(order);
           } catch (ArgumentNullException) {
               Console.WriteLine("No such location on record.");
+          } catch (FormatException) {
+              Console.WriteLine("Invalid input.");
           }
         }
         static void displayCustomerOrderHistory()
@@ -104,7 +111,8 @@ namespace Business.ConsoleUI
           try {
               Console.WriteLine("Enter customer id.");
               var myCustomerId = Convert.ToInt32(Console.ReadLine());
-              foreach (var order in store.orderHistoryByCustomerId(myCustomerId)) Console.WriteLine(order);
+              var myOrders = store.orderHistoryByCustomerId(myCustomerId).ToList();
+              foreach (var order in myOrders) Console.WriteLine(order);
           } catch (ArgumentNullException) {
               Console.WriteLine("No such location on record.");
           }
@@ -117,7 +125,10 @@ namespace Business.ConsoleUI
               var myCustomerId = Convert.ToInt32(Console.ReadLine());
               Console.WriteLine("Enter location id.");
               var myLocationId = Convert.ToInt32(Console.ReadLine());
-              if (!store.doesExistLocationById(myLocationId)) Console.WriteLine("Location Id not found.");
+              if (!store.doesExistLocationById(myLocationId)) {
+                  Console.WriteLine("Location Id not found.");
+                  return;
+              }
               Console.WriteLine("Enter items by id on each line (stop to stop).");
               var input = Console.ReadLine();
               var myItemIds = new List<int>();
