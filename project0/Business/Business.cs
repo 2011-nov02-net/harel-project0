@@ -28,7 +28,7 @@ namespace Business
   /// optional: documentation with <params> and <return> on public methods
   public class Store : IStore
   {
-    const string connectionStringPath = "../../project0-connection-string.txt";
+    const string connectionStringPath = "../project0-connection-string.txt";
     private static project0Context context;
     private IEnumerable<Sorder> Orders {
       get => (IEnumerable<Sorder>) context.Sorders;
