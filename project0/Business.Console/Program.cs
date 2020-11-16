@@ -74,7 +74,7 @@ namespace Business.ConsoleUI
         {
           Console.WriteLine("Enter customer name.");
           var customers = store.getCustomersByName(Console.ReadLine());
-          foreach (var customer in customers) Console.WriteLine(customer);
+          foreach (var customer in customers) Console.WriteLine($"id:{customer.Id},\t Name:{customer.Name}");
           if (customers.Count == 0) Console.WriteLine("No customers with given name.");
         }
         static void displayOrderDetails()
