@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -24,11 +24,22 @@ namespace Business
   {
     const string connectionStringPath = "../../project0-connection-string.txt";
     private static project0Context context;
-    /* /// Considering accessing tables through properties.
     private IEnumerator<Sorder> Orders {
       get => (IEnumerator<Sorder>) context.Sorders;
       set => context.Sorders = (DbSet<Sorder>) value;
-    }*/
+    }
+    private IEnumerator<Location> Locations {
+      get => (IEnumerator<Location>) context.Locations;
+      set => context.Locations = (DbSet<Location>) value;
+    }
+    private IEnumerator<Customer> Customers {
+      get => (IEnumerator<Customer>) context.Customers;
+      set => context.Customers = (DbSet<Customer>) value;
+    }
+    private IEnumerator<Item> Items {
+      get => (IEnumerator<Item>) context.Items;
+      set => context.Items = (DbSet<Item>) value;
+    }
     public Store() {
       string connectionString;
       try {
@@ -42,27 +53,27 @@ namespace Business
       context = project0Context(optionsBuilder.Options);
     }
     public bool doesExistCustomerById(int customerId) {
-      return context.Customer.Where(customer => customer.Id == customerId).toList().Length() != 0;
+      return Customers.Where(customer => customer.Id == customerId).toList().Length() != 0;
     }
     public bool doesExistLocationById(int locationId) {
-      return context.Location.Where(location => location.Id == locationId).toList().Length() != 0;
+      return Locations.Where(location => location.Id == locationId).toList().Length() != 0;
     }
     public bool doesExistOrderById(int orderId) {
-      return context.Sorder.Where(order => order.Id == orderId).toList().Length() != 0;
+      return Orders.Where(order => order.Id == orderId).toList().Length() != 0;
     }
     public bool doesExistItemById(int itemId) {
-      return context.Item.Where(item => item.Id == itemId).toList().Length() != 0;
+      return Items.Where(item => item.Id == itemId).toList().Length() != 0;
     }
     public void placeOrder(int customerId, int locationId, IEnumerable<int> itemIds){
       var myOrder = new Order{ LocationId = locationId, CustomerId = customerId };
       // OrderId should be set automatically by the context? look up Identity handling in EF
-      context.Sorder.add(myOrder);
+      Orders.add(myOrder);
       context.SaveChanges();
       foreach (var grouping in itemIds.GroupBy(x => x)) {
-        var myOrderItem = new OrderItem { 
-          OrderId = myOrder.Id, 
-          ItemId = grouping.Key, 
-          ItemCount = grouping.Count() 
+        var myOrderItem = new OrderItem {
+          OrderId = myOrder.Id,
+          ItemId = grouping.Key,
+          ItemCount = grouping.Count()
         };
         context.Add(myOrderItem);
       }
@@ -70,27 +81,36 @@ namespace Business
     }
     public void addCustomerByName(string name) {
       var myCustomer = new Customer { Name = name};
-      context.Customer.add(myCustomer);
+      Customers.add(myCustomer);
       context.SaveChanges();
     }
     public void save() {
       context.SaveChanges();
     }
     public IEnumerable<Sorder> orderHistoryByLocationId(int locationId) {
-      throw new NotImplementedException();
-      return from order in context.Sorder where order.LocationId == locationId select order;
+      if (doesExistLocationById(locationId)) {
+        return (IEnumerable<Sorder>) Locations.Where(x => x.Id == locationId).First().Sorders;
+      } else {
+        throw new ArgumentExcepton("Location Id not found.");
+      }
+      //return from order in context.Sorder where order.LocationId == locationId select order;
     }
     public IEnumerable<Sorder> orderHistoryByCustomerId(int customerId) {
-      throw new NotImplementedException();
-      return from order in context.Sorder where order.CustomerId == customerId select order;
+      if (doesExistCustomerById(customerId)) {
+        return (IEnumerable<Sorder>) Customer.Where(x => x.Id == customerId).First().Sorders;
+      }
+      else {
+        throw new ArgumentException("Customer Id not found.");
+      }
+      //return from order in context.Sorder where order.CustomerId == customerId select order;
     }
   }
   public static class DisplayEntity { // implement toString extension method for SOrder class
     public static override string ToString(this Sorder order)
     {
       //throw new NotImplementedException();
-      return $"{Id: {order.Id}, {order.TimePlaced}" + String.Join(" ",
-        OrderItem.Where(x => x.Order == order).Select(x => $"{x.Item}: {x.itemCount}") );
+      return $"{Id: {order.Id}, {order.TimePlaced}" + String.Join(", ",
+        order.OrderItems.Select(x => $"{x.Item}: {x.itemCount}") );
       //(from kv in OrderItem where kv.Order == order
       //select $"{kv.Item}: {kv.itemCount}"
       // iterate through orderItems and build string
