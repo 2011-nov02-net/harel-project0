@@ -58,7 +58,7 @@ namespace Business
       optionsBuilder.UseSqlServer(connectionString);
       using var logStream = new StreamWriter("ef-logs.txt");
       optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Information);
-      using var contextConnection = new project0Context(optionsBuilder.Options);
+      var contextConnection = new project0Context(optionsBuilder.Options);
       context = contextConnection;
     }
     public bool doesExistCustomerById(int customerId) {
