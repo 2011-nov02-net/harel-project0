@@ -56,10 +56,9 @@ namespace Business
         throw new Exception();
       }
       optionsBuilder.UseSqlServer(connectionString);
-      using var logStream = new StreamWriter("ef-logs.txt");
-      optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Information);
-      var contextConnection = new project0Context(optionsBuilder.Options);
-      context = contextConnection;
+      //using var logStream = new StreamWriter("ef-logs.txt");
+      //optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Information);
+      context = new project0Context(optionsBuilder.Options);
     }
     public bool doesExistCustomerById(int customerId) {
       return ((DbSet<Customer>)Customers).Find(customerId) != null;
