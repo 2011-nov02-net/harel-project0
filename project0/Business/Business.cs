@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -24,12 +24,18 @@ namespace Business
   {
     const string connectionStringPath = "../../project0-connection-string.txt";
     private static project0Context context;
+    /* /// Considering accessing tables through properties.
+    private IEnumerator<Sorder> Orders {
+      get => (IEnumerator<Sorder>) context.Sorders;
+      set => context.Sorders = (DbSet<Sorder>) value;
+    }*/
     public Store() {
       string connectionString;
       try {
         connectionString = File.ReadAllText(connectionStringPath); // strip text
       } catch (IOException) {
         Console.WriteLine($"required file {connectionStringPath} not found.");
+        throw new Exception();
       }
       var optionsBuilder = new DbContextOptionsBuilder<project0Context>().UseSqlServer(connectionString);
       //optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Information);
@@ -52,8 +58,12 @@ namespace Business
       // OrderId should be set automatically by the context? look up Identity handling in EF
       context.Sorder.add(myOrder);
       context.SaveChanges();
-      foreach (var kv in itemIds.GroupBy(x => x).Count()) {
-        var myOrderItem = new OrderItem { OrderId = myOrder.OrderId, ItemId = kv.Key, ItemCount = kv.Value };
+      foreach (var grouping in itemIds.GroupBy(x => x)) {
+        var myOrderItem = new OrderItem { 
+          OrderId = myOrder.Id, 
+          ItemId = grouping.Key, 
+          ItemCount = grouping.Count() 
+        };
         context.Add(myOrderItem);
       }
       context.SaveChanges();
@@ -78,7 +88,7 @@ namespace Business
   public static class DisplayEntity { // implement toString extension method for SOrder class
     public static override string ToString(this Sorder order)
     {
-      throw new NotImplementedException();
+      //throw new NotImplementedException();
       return $"{Id: {order.Id}, {order.TimePlaced}" + String.Join(" ",
         OrderItem.Where(x => x.Order == order).Select(x => $"{x.Item}: {x.itemCount}") );
       //(from kv in OrderItem where kv.Order == order
@@ -88,7 +98,7 @@ namespace Business
     }
     public static override string ToString(this Item item)
     {
-      throw new NotImplementedException();
+      //throw new NotImplementedException();
       return item.Name;
     }
   }
