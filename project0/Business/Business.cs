@@ -93,17 +93,11 @@ namespace Business
     }
     public Sorder findOrderById(int orderId) 
     {
-      return ((DbSet<Sorder>)Orders)
+      var output = ((DbSet<Sorder>)Orders).Where(o => o.Id == orderId)
       .Include(o => o.OrderItems).ThenInclude(io => io.Item)
-      .Include(o => o.Customer).ThenInclude(c => c.Name)
-      .Include(o => o.Customer).ThenInclude(c => c.Id)
-      .Include(o => o.Location).ThenInclude(c => c.Name)
-      .Include(o => o.Location).ThenInclude(c => c.Id)
-      .Where(o => o.Id == orderId).First();   
-      /*
-      .Include(o => o.Location).ThenInclude(l => l.Name)
-      .Include(o => o.Customer).ThenInclude(c => c.Name)
-      */
+      .Include(o => o.Customer).Include(o => o.Location);
+      output.Load();
+      return output.First(); 
     }
     public void addCustomerByName(string name) {
       var myCustomer = new Customer { Name = name};
@@ -116,8 +110,9 @@ namespace Business
     public IEnumerable<Sorder> orderHistoryByLocationId(int locationId) {
       if (doesExistLocationById(locationId)) {
         return (IEnumerable<Sorder>) ((DbSet<Location>)Locations)
+        .Where(x => x.Id == locationId)
         .Include(l => l.Sorders).ThenInclude(o => o.OrderItems).ThenInclude(oi => oi.Item)
-        .Where(x => x.Id == locationId).First().Sorders.ToList();
+        .First().Sorders.ToList();
       } else {
         throw new ArgumentException("Location Id not found.");
       }
@@ -126,8 +121,9 @@ namespace Business
     public IEnumerable<Sorder> orderHistoryByCustomerId(int customerId) {
       if (doesExistCustomerById(customerId)) {
         return (IEnumerable<Sorder>) ((DbSet<Customer>)Customers)
+        .Where(x => x.Id == customerId)
         .Include(c => c.Sorders).ThenInclude(o => o.OrderItems).ThenInclude(oi => oi.Item)
-        .Where(x => x.Id == customerId).First().Sorders.ToList();
+        .First().Sorders.ToList();
       }
       else {
         throw new ArgumentException("Customer Id not found.");
@@ -152,6 +148,10 @@ namespace Business
     public override string ToString() {
       return $"id:{this.Id},\t Name:{this.Name}";
     }
-  
+  }
+  public partial class Location {
+    public override string ToString() {
+        return $"id:{this.Id},\t Name:{this.Name}";
+    }
   }
 }

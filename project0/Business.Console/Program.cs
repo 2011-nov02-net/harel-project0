@@ -84,8 +84,8 @@ namespace Business.ConsoleUI
               Console.WriteLine("Enter order id.");
               var myOrderId = Convert.ToInt32(Console.ReadLine());
               var myOrder = store.findOrderById(myOrderId);
-              Console.WriteLine($"Order Id: {myOrderId}");
-              Console.WriteLine("Contents");
+              Console.WriteLine($"Customer: {myOrder.Customer}");
+              Console.WriteLine($"Location: {myOrder.Location}");
               Console.WriteLine(myOrder);
           } catch (FormatException) {
               Console.WriteLine("Invalid formalt.");
