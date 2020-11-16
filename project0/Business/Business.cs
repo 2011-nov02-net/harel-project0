@@ -30,19 +30,19 @@ namespace Business
   {
     const string connectionStringPath = "../project0-connection-string.txt";
     private static project0Context context;
-    private IEnumerable<Sorder> Orders {
+    internal static IEnumerable<Sorder> Orders {
       get => (IEnumerable<Sorder>) context.Sorders;
       set => context.Sorders = (DbSet<Sorder>) value;
     }
-    private IEnumerable<Location> Locations {
+    internal static IEnumerable<Location> Locations {
       get => (IEnumerable<Location>) context.Locations;
       set => context.Locations = (DbSet<Location>) value;
     }
-    private IEnumerable<Customer> Customers {
+    internal static IEnumerable<Customer> Customers {
       get => (IEnumerable<Customer>) context.Customers;
       set => context.Customers = (DbSet<Customer>) value;
     }
-    private IEnumerable<Item> Items {
+    internal static IEnumerable<Item> Items {
       get => (IEnumerable<Item>) context.Items;
       set => context.Items = (DbSet<Item>) value;
     }
