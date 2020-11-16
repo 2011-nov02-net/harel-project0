@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Business;
 
 
-namespace Business.Console
+namespace Business.ConsoleUI
 {
     /// <summary>
     /// </summary>
@@ -22,7 +22,6 @@ namespace Business.Console
         
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             store = (IStore) new Store();
             Menu();
         }
@@ -30,7 +29,7 @@ namespace Business.Console
         {
             while (true)
             {
-                Console.WriteLine("Select An Activity?");
+                System.Console.WriteLine("Select An Activity?");
                 for (int i = 0; i < activities.Count; i++) Console.WriteLine(activities[i]+$"({i})");
                 var activityCode = Convert.ToInt32(Console.ReadLine());
                 if (activityCode == -1) return;
@@ -118,18 +117,18 @@ namespace Business.Console
               var myCustomerId = Convert.ToInt32(Console.ReadLine());
               Console.WriteLine("Enter location id.");
               var myLocationId = Convert.ToInt32(Console.ReadLine());
-              if (!store.doesExistLocationById(myLocationId)) Console.Writeline("Location Id not found.");
+              if (!store.doesExistLocationById(myLocationId)) Console.WriteLine("Location Id not found.");
               Console.WriteLine("Enter items by id on each line (stop to stop).");
               var input = Console.ReadLine();
               var myItemIds = new List<int>();
               while (input != "stop")
               {
                   try {
-                    myItemId = Convert.ToInt32(input);
-                    if (store.doesExistItemById(myitemId)) myItemIds.Add(myItemId);
-                    else Console.Writeline("Item Id not found.");
+                    var myItemId = Convert.ToInt32(input);
+                    if (store.doesExistItemById(myItemId)) myItemIds.Add(myItemId);
+                    else Console.WriteLine("Item Id not found.");
                   } catch (Exception) {
-                    Console.Writeline("Invalid input, is that an item id?");
+                    Console.WriteLine("Invalid input, is that an item id?");
                   }
                   input = Console.ReadLine();
               }

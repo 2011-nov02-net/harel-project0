@@ -18,6 +18,8 @@ namespace Business
     bool doesExistLocationById(int locationId);
     bool doesExistOrderById(int orderId);
     bool doesExistItemById(int itemId);
+    Sorder findOrderById(int orderId);
+    List<Customer> getCustomersByName(string name);
     IEnumerable<Sorder> orderHistoryByLocationId(int locationId);
     IEnumerable<Sorder> orderHistoryByCustomerId(int customerId);
     void save();
@@ -85,6 +87,14 @@ namespace Business
         context.Add(myOrderItem);
       }
       context.SaveChanges();
+    }
+    public List<Customer> getCustomersByName(string name)
+    {
+      return ((DbSet<Customer>)Customers).Where(x => x.Name == name).ToList();
+    }
+    public Sorder findOrderById(int orderId) 
+    {
+      return ((DbSet<Sorder>)Orders).Find(orderId);   
     }
     public void addCustomerByName(string name) {
       var myCustomer = new Customer { Name = name};
