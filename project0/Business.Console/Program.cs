@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Business;
 
+
 namespace Business.Console
 {
     /// <summary>
@@ -61,7 +62,7 @@ namespace Business.Console
                     consolePlaceOrder();
                     break;
                 default:
-                    throw new ArgumentException();
+                    throw new ArgumentException($"i:{i}");
             }
         }
         static void addCustomer()
