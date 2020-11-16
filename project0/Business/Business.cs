@@ -121,7 +121,30 @@ namespace Business
       //return from order in context.Sorder where order.CustomerId == customerId select order;
     }
   }
-  public static class DisplayEntity { // implement toString extension method for SOrder class
+  public partial class Sorder {
+    public override string ToString()
+    {
+        return $"Id: {this.Id}, {this.TimePlaced}" + String.Join(", ",
+        this.OrderItems.Select(x => $"{x.Item}: {x.ItemCount}") );
+    }
+  }
+  public partial class Item {
+    public override string ToString()
+    {
+        return this.Name+$" ({this.Id})";
+    }
+  }
+  public partial class Customer {
+    public override string ToString()
+    {
+        return $"id:{this.Id},\t Name:{this.Name}";
+    }
+  
+  }
+}
+
+/*
+public static class DisplayEntity { // implement toString extension method for SOrder class
     public static string ToString(this Sorder order)
     {
       //throw new NotImplementedException();
@@ -138,4 +161,4 @@ namespace Business
       return item.Name;
     }
   }
-}
+*/
