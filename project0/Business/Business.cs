@@ -4,8 +4,6 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 namespace Business
@@ -101,15 +99,27 @@ namespace Business
       // OrderId should be set automatically by the context? look up Identity handling in EF
       ((DbSet<Sorder>)Orders).Add(myOrder);
       context.SaveChanges();
+      var inventory = context.LocationItems
+        .Where(x => x.LocationId == locationId)
+        .Where(x => itemIds.Contains(x.ItemId)).ToList();
       foreach (var grouping in itemIds.GroupBy(x => x)) {
         var myOrderItem = new OrderItem {
           OrderId = myOrder.Id,
           ItemId = grouping.Key,
           ItemCount = grouping.Count()
         };
-        context.Add(myOrderItem);
+        var myLocationItem = inventory.Find(x => x.ItemId == myOrderItem.ItemId);
+        myLocationItem.ItemCount -= myOrderItem.ItemCount;
+        context.LocationItems.Update(myLocationItem);
+        //if (myLocationItem.ItemCount >= myOrderItem.ItemCount)
+        context.OrderItems.Add(myOrderItem);
       }
-      context.SaveChanges();
+      try {
+        context.SaveChanges();
+      } catch (Exception e) {
+        context.Sorders.Remove(myOrder);
+        throw e;
+      }
     }
     /// <summary>
     /// Make a list of customers with a given name
