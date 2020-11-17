@@ -4,8 +4,6 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 namespace Business
