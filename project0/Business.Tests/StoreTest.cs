@@ -8,8 +8,8 @@ namespace Business.Tests
     public class StoreTest
     {
         static Store store;
-        StoreTest () {
-            store = new Store();
+        public StoreTest () {
+            store = new Store("/home/hmf/harel-project0/project0/project0-connection-string.txt");
         }
         // test that resources are released when object is gone.
         [Fact]

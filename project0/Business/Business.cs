@@ -54,7 +54,6 @@ namespace Business
     /// opens a connection through a context and stores it in a static member
     /// </summary>
     public Store() {
-      var optionsBuilder = new DbContextOptionsBuilder<project0Context>();
       string connectionString;
       try {
         connectionString = File.ReadAllText(connectionStringPath); // strip text
@@ -62,9 +61,21 @@ namespace Business
         Console.WriteLine($"required file {connectionStringPath} not found.");
         throw new Exception();
       }
+      Connect(connectionString);
+    }
+    public Store(string connectionStringPath) {
+      string connectionString;
+      try {
+        connectionString = File.ReadAllText(connectionStringPath); // strip text
+      } catch (IOException) {
+        Console.WriteLine($"required file {connectionStringPath} not found.");
+        throw new Exception();
+      }
+      Connect(connectionString);
+    }
+    private static void Connect(string connectionString) {
+      var optionsBuilder = new DbContextOptionsBuilder<project0Context>();
       optionsBuilder.UseSqlServer(connectionString);
-      //using var logStream = new StreamWriter("ef-logs.txt");
-      //optionsBuilder.LogTo(logStream.WriteLine, LogLevel.Information);
       context = new project0Context(optionsBuilder.Options);
     }
     /// <summary>
