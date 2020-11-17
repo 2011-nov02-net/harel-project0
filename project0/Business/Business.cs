@@ -92,7 +92,12 @@ namespace Business
         //if (myLocationItem.ItemCount >= myOrderItem.ItemCount)
         context.OrderItems.Add(myOrderItem);
       }
-      context.SaveChanges();
+      try {
+        context.SaveChanges();
+      } catch (Exception e) {
+        context.Sorders.Remove(myOrder);
+        throw e;
+      }
     }
     public List<Customer> getCustomersByName(string name)
     {
