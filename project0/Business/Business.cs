@@ -226,7 +226,7 @@ namespace Business
     /// Display an customer in the style "id: {id}, Name: {Name}"
     /// </summary>
     public override string ToString() {
-      return $"id: {this.Id},\t Name: {this.Name}";
+      return $"id: {this.Id}, Name: {this.Name}";
     }
   }
   public partial class Location {
@@ -234,7 +234,7 @@ namespace Business
     /// Display an location in the style "id: {id}, Name: {Name}"
     /// </summary>
     public override string ToString() {
-        return $"id: {this.Id},\t Name: {this.Name}";
+        return $"id: {this.Id}, Name: {this.Name}";
     }
   }
 }

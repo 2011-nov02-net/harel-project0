@@ -78,7 +78,9 @@ namespace Business.Tests
             store.addCustomerByName("TestName");
             store.save();
             var testCustomer = store.getCustomersByName("TestName").Last();
-            Assert.Equal(testCustomer.ToString(), $"id:{testCustomer.Id},\t Name:{testCustomer.Name}");
+            //Console.WriteLine(testCustomer);
+            //Console.WriteLine($"id: {testCustomer.Id}, Name: {testCustomer.Name}");
+            Assert.Equal(testCustomer.ToString(), $"id: {testCustomer.Id}, Name: {testCustomer.Name}");
         }
         static string MakeRandomName() {
             var r = new Random();
