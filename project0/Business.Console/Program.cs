@@ -7,6 +7,11 @@ using System.Linq;
 namespace Business.ConsoleUI
 {
     /// <summary>
+    /// Main console UI to IStore interface
+    // interacts by sending strings and ints
+    /// recieves Sorders, strings and ints
+    /// in the future replace EF framework generated Sorder
+    /// With a class inheriting from it that implements an interface.
     /// </summary>
     class Program
     {
@@ -117,7 +122,7 @@ namespace Business.ConsoleUI
               Console.WriteLine("No such location on record.");
           }
         }
-        static void consolePlaceOrder() // fix to not expose object model only interface
+        static void consolePlaceOrder()
         {
           try
           {
