@@ -78,7 +78,7 @@ namespace Business.ConsoleUI
           var nName = Console.ReadLine();
           store.addCustomerByName(nName);
           store.save();
-          Console.WriteLine($"Success, new customer added with Id:{store.getCustomersByName(nName).Last().Id}");
+          Console.WriteLine($"Success, new customer added");
         }
         static void displayCustomersByName()
         {
@@ -93,8 +93,6 @@ namespace Business.ConsoleUI
               Console.WriteLine("Enter order id.");
               var myOrderId = Convert.ToInt32(Console.ReadLine());
               var myOrder = store.findOrderById(myOrderId);
-              Console.WriteLine($"Customer: {myOrder.Customer}");
-              Console.WriteLine($"Location: {myOrder.Location}");
               Console.WriteLine(myOrder);
           } catch (InvalidOperationException) {
               Console.WriteLine("No such order on record.");
