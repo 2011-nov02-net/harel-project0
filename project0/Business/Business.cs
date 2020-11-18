@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.ExceptionServices;
 
 namespace Business
 {
@@ -66,7 +67,7 @@ namespace Business
     public Store(string connectionStringPath) {
       string connectionString;
       try {
-        connectionString = File.ReadAllText(connectionStringPath); // strip text
+        connectionString = File.ReadAllText(connectionStringPath);
       } catch (IOException) {
         Console.WriteLine($"required file {connectionStringPath} not found.");
         throw new Exception();
@@ -127,9 +128,9 @@ namespace Business
       }
       try {
         context.SaveChanges();
-      } catch (Exception e) {
+      } catch (Exception ex) {
         context.Sorders.Remove(myOrder);
-        throw e;
+        ExceptionDispatchInfo.Capture(ex).Throw();
       }
     }
     /// <summary>
