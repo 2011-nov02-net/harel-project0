@@ -62,7 +62,11 @@ namespace Business.Tests
             store.placeOrder(testCustomer.Id, 1, new List<int> {1,1});
             var myOrder = store.orderHistoryByCustomerId(testCustomer.Id).Last();
             var otherOrder = store.findOrderById(myOrder.Id);
-            Assert.Equal(myOrder, otherOrder);
+            string output = "";
+            output += $"Customer: {myOrder.Customer}\n";
+            output += $"Location: {myOrder.Location}\n";
+            output += myOrder.ToString();
+            Assert.Equal(output, otherOrder);
         }
         [Fact]
         public void TestExistsOrder1() {
@@ -73,13 +77,14 @@ namespace Business.Tests
             var myOrder = store.findOrderById(1);
             Console.WriteLine(myOrder);
         }
+
         [Fact]
         public void TestPrintCustomer() {
             store.addCustomerByName("TestName");
             store.save();
             var testCustomer = store.getCustomersByName("TestName").Last();
-            //Console.WriteLine(testCustomer);
-            //Console.WriteLine($"id: {testCustomer.Id}, Name: {testCustomer.Name}");
+            Console.WriteLine(testCustomer);
+            Console.WriteLine($"id: {testCustomer.Id}, Name: {testCustomer.Name}");
             Assert.Equal(testCustomer.ToString(), $"id: {testCustomer.Id}, Name: {testCustomer.Name}");
         }
         static string MakeRandomName() {

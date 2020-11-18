@@ -18,7 +18,7 @@ namespace Business
     bool doesExistOrderById(int orderId);
     bool doesExistItemById(int itemId);
     String findOrderById(int orderId);
-    List<String> getCustomersByName(string name);
+    List<Customer> getCustomersByName(string name);
     IEnumerable<Sorder> orderHistoryByLocationId(int locationId);
     IEnumerable<Sorder> orderHistoryByCustomerId(int customerId);
     void save();
@@ -136,8 +136,8 @@ namespace Business
     /// <summary>
     /// Make a list of customers with a given name
     /// </summary>
-    public List<String> getCustomersByName(string name) {
-      return ((DbSet<Customer>)Customers).Where(x => x.Name == name).Select(x => x.ToString()).ToList();
+    public List<Customer> getCustomersByName(string name) {
+      return ((DbSet<Customer>)Customers).Where(x => x.Name == name).ToList();
     }
     /// <summary>
     /// Find an order by Id and
