@@ -35,8 +35,9 @@ namespace Business.ConsoleUI
         {
             while (true)
             {
-                System.Console.WriteLine("Select An Activity?");
-                for (int i = 0; i < activities.Count; i++) Console.WriteLine(activities[i]+$"({i})");
+                Console.Clear();
+                Console.WriteLine("Select An Activity?");
+                for (int i = 0; i < activities.Count; i++) Console.WriteLine(activities[i]+$" ({i})");
                 var activityCode = Convert.ToInt32(Console.ReadLine());
                 if (activityCode == -1) return;
                 if (activityCode >= 0 && activityCode < activities.Count) {
@@ -69,12 +70,15 @@ namespace Business.ConsoleUI
                 default:
                     throw new ArgumentException($"i:{i}");
             }
+            Console.ReadLine();
         }
         static void addCustomer()
         {
           Console.WriteLine("Enter customer name.");
-          store.addCustomerByName(Console.ReadLine());
+          var nName = Console.ReadLine();
+          store.addCustomerByName(nName);
           store.save();
+          Console.WriteLine($"Success, new customer added with Id:{store.getCustomersByName(nName).Last().Id}");
         }
         static void displayCustomersByName()
         {
@@ -92,10 +96,10 @@ namespace Business.ConsoleUI
               Console.WriteLine($"Customer: {myOrder.Customer}");
               Console.WriteLine($"Location: {myOrder.Location}");
               Console.WriteLine(myOrder);
-          } catch (FormatException) {
-              Console.WriteLine("Invalid formalt.");
           } catch (InvalidOperationException) {
               Console.WriteLine("No such order on record.");
+          } catch (FormatException) {
+              Console.WriteLine("Invalid format.");
           }
         }
         static void displayLocationOrderHistory()
@@ -109,6 +113,8 @@ namespace Business.ConsoleUI
               Console.WriteLine("No such location on record.");
           } catch (FormatException) {
               Console.WriteLine("Invalid input.");
+          } catch (ArgumentException) {
+              Console.WriteLine("No such location on record.");
           }
         }
         static void displayCustomerOrderHistory()
@@ -118,8 +124,10 @@ namespace Business.ConsoleUI
               var myCustomerId = Convert.ToInt32(Console.ReadLine());
               var myOrders = store.orderHistoryByCustomerId(myCustomerId).ToList();
               foreach (var order in myOrders) Console.WriteLine(order);
-          } catch (ArgumentNullException) {
-              Console.WriteLine("No such location on record.");
+          } catch (ArgumentException) {
+              Console.WriteLine("No such customer on record.");
+          } catch (FormatException) {
+              Console.WriteLine("Invalid input.");
           }
         }
         static void consolePlaceOrder()
@@ -132,6 +140,10 @@ namespace Business.ConsoleUI
               var myLocationId = Convert.ToInt32(Console.ReadLine());
               if (!store.doesExistLocationById(myLocationId)) {
                   Console.WriteLine("Location Id not found.");
+                  return;
+              }
+              if (!store.doesExistCustomerById(myCustomerId)) {
+                  Console.WriteLine("Customer Id not found.");
                   return;
               }
               Console.WriteLine("Enter items by id on each line (stop to stop).");
@@ -149,6 +161,7 @@ namespace Business.ConsoleUI
                   input = Console.ReadLine();
               }
               store.placeOrder(myCustomerId, myLocationId, (IEnumerable<int>) myItemIds);
+              Console.WriteLine("Success, order placed.");
           }
           catch (Exception) {
               Console.WriteLine("Invalid Input.");
