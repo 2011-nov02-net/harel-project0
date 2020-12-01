@@ -355,3 +355,5 @@ project0/Business.Console/ef-logs.txt
 project0.code-workspace
 project0/Business.Tests/project0-connection-string.txt
 project0-connection-string.txt
+project0/Business.Console/.vscode/launch.json
+project0/Business.Console/.vscode/tasks.json
