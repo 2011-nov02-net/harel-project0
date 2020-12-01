@@ -1,45 +1,45 @@
 INSERT INTO Store.Item
-( Name )
+( [Name] )
 VALUES
-( 'Apple'),
-('Orange' ),
-('Banana')
+( 'Apple' ),
+( 'Orange' ),
+( 'Banana' )
 GO
 
 INSERT INTO Store.Customer
-( Name )
+( [Name] )
 VALUES
-( 'Mike');
+( 'Mike' );
 GO
 
-INSERT INTO Store.[Location]
-( Name )
+INSERT INTO Store.Location
+( [Name] )
 VALUES
-( 'America');
+( 'America' );
 GO
 
-INSERT INTO Store.[LocationItem]
+INSERT INTO Store.LocationItem
 ( LocationId, ItemId, ItemCount )
 VALUES
-( (Select top (1) Id from Store.[Location]),
-(select top (1) id from store.Item where name = 'Apple'),
-1000000000);
+( (SELECT TOP (1) Id FROM Store.Location),
+    (SELECT TOP (1) Id FROM Store.Item WHERE [Name] = 'Apple'),
+    1000000000 );
 GO
 
 
-INSERT INTO Store.[LocationItem]
+INSERT INTO Store.LocationItem
 ( LocationId, ItemId, ItemCount )
 VALUES
-( (Select top (1) Id from Store.[Location]),
-(select top (1) id from store.Item where name = 'Orange'),
-1000000000);
+( (SELECT TOP (1) Id FROM Store.Location),
+    (SELECT TOP (1) Id FROM Store.Item WHERE [Name] = 'Orange'),
+    1000000000);
 GO
 
 
-INSERT INTO Store.[LocationItem]
+INSERT INTO Store.LocationItem
 ( LocationId, ItemId, ItemCount )
 VALUES
-( (Select top (1) Id from Store.[Location]),
-(select top (1) id from store.Item where name = 'Banana'),
-1000000000);
+( (SELECT TOP (1) Id FROM Store.Location),
+    (SELECT TOP (1) Id FROM Store.Item WHERE [Name] = 'Banana'),
+    1000000000);
 GO
