@@ -22,7 +22,7 @@ namespace Business
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<LocationItem> LocationItems { get; set; }
         public virtual DbSet<OrderItem> OrderItems { get; set; }
-        public virtual DbSet<Sorder> Sorders { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,25 +91,25 @@ namespace Business
                     .HasConstraintName("FK__OrderItem__Order__114A936A");
             });
 
-            modelBuilder.Entity<Sorder>(entity =>
+            modelBuilder.Entity<Order>(entity =>
             {
-                entity.ToTable("SOrder", "Store");
+                entity.ToTable("Order", "Store");
 
                 entity.Property(e => e.TimePlaced)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(sysdatetime())");
 
                 entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.Sorders)
+                    .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SOrder__Customer__0D7A0286");
+                    .HasConstraintName("FK__Order__Customer__0D7A0286");
 
                 entity.HasOne(d => d.Location)
-                    .WithMany(p => p.Sorders)
+                    .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.LocationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SOrder__Location__0C85DE4D");
+                    .HasConstraintName("FK__Order__Location__0C85DE4D");
             });
 
             OnModelCreatingPartial(modelBuilder);

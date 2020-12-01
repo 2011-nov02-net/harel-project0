@@ -12,6 +12,6 @@ namespace Business
         public int ItemCount { get; set; }
 
         public virtual Item Item { get; set; }
-        public virtual Sorder Order { get; set; }
+        public virtual Order Order { get; set; }
     }
 }

@@ -19,8 +19,8 @@ namespace Business
     bool doesExistItemById(int itemId);
     String findOrderById(int orderId);
     List<Customer> getCustomersByName(string name);
-    IEnumerable<Sorder> orderHistoryByLocationId(int locationId);
-    IEnumerable<Sorder> orderHistoryByCustomerId(int customerId);
+    IEnumerable<Order> orderHistoryByLocationId(int locationId);
+    IEnumerable<Order> orderHistoryByCustomerId(int customerId);
     void save();
   }
   /// documentation with <summary> XML comments on all public types and members
@@ -34,9 +34,9 @@ namespace Business
   {
     const string connectionStringPath = "../project0-connection-string.txt";
     private static project0Context context;
-    internal static IEnumerable<Sorder> Orders {
-      get => (IEnumerable<Sorder>) context.Sorders;
-      set => context.Sorders = (DbSet<Sorder>) value;
+    internal static IEnumerable<Order> Orders {
+      get => (IEnumerable<Order>) context.Orders;
+      set => context.Orders = (DbSet<Order>) value;
     }
     internal static IEnumerable<Location> Locations {
       get => (IEnumerable<Location>) context.Locations;
@@ -92,10 +92,10 @@ namespace Business
       return ((DbSet<Location>)Locations).Find(locationId) != null;
     }
     /// <summary>
-    /// check for the existence of a Sorder by id
+    /// check for the existence of a Order by id
     /// </summary>
     public bool doesExistOrderById(int orderId) {
-      return ((DbSet<Sorder>)Orders).Find(orderId) != null;
+      return ((DbSet<Order>)Orders).Find(orderId) != null;
     }
     /// <summary>
     /// check for the existence of a Item by id
@@ -107,9 +107,9 @@ namespace Business
     /// Place an order
     /// </summary>
     public void placeOrder(int customerId, int locationId, IEnumerable<int> itemIds){
-      var myOrder = new Sorder{ LocationId = locationId, CustomerId = customerId };
+      var myOrder = new Order{ LocationId = locationId, CustomerId = customerId };
       // OrderId should be set automatically by the context? look up Identity handling in EF
-      ((DbSet<Sorder>)Orders).Add(myOrder);
+      ((DbSet<Order>)Orders).Add(myOrder);
       context.SaveChanges();
       var inventory = context.LocationItems
         .Where(x => x.LocationId == locationId)
@@ -129,7 +129,7 @@ namespace Business
       try {
         context.SaveChanges();
       } catch (Exception ex) {
-        context.Sorders.Remove(myOrder);
+        context.Orders.Remove(myOrder);
         ExceptionDispatchInfo.Capture(ex).Throw();
       }
     }
@@ -145,7 +145,7 @@ namespace Business
     /// </summary>
     public String findOrderById(int orderId)
     {
-      var myOrder = ((DbSet<Sorder>)Orders).Where(o => o.Id == orderId)
+      var myOrder = ((DbSet<Order>)Orders).Where(o => o.Id == orderId)
       .Include(o => o.OrderItems).ThenInclude(io => io.Item)
       .Include(o => o.Customer).Include(o => o.Location).First();
       string output = "";
@@ -169,42 +169,42 @@ namespace Business
       context.SaveChanges();
     }
     /// <summary>
-    /// Use LINQ to eagerly collect all the SOrder objects for a given location.
+    /// Use LINQ to eagerly collect all the Order objects for a given location.
     /// Collect Item info for all orders
     /// </summary>
-    public IEnumerable<Sorder> orderHistoryByLocationId(int locationId) {
+    public IEnumerable<Order> orderHistoryByLocationId(int locationId) {
       if (doesExistLocationById(locationId)) {
-        return (IEnumerable<Sorder>) ((DbSet<Location>)Locations)
+        return (IEnumerable<Order>) ((DbSet<Location>)Locations)
         .Where(x => x.Id == locationId)
-        .Include(l => l.Sorders).ThenInclude(o => o.OrderItems).ThenInclude(oi => oi.Item)
-        .First().Sorders.ToList();
+        .Include(l => l.Orders).ThenInclude(o => o.OrderItems).ThenInclude(oi => oi.Item)
+        .First().Orders.ToList();
       } else {
         throw new ArgumentException("Location Id not found.");
       }
-      //return from order in context.Sorder where order.LocationId == locationId select order;
+      //return from order in context.Order where order.LocationId == locationId select order;
     }
     /// <summary>
-    /// Use LINQ to eagerly collect all the SOrder objecsts for a given customer.
+    /// Use LINQ to eagerly collect all the Order objecsts for a given customer.
     /// Collect Item info for all orders
     /// </summary>
-    public IEnumerable<Sorder> orderHistoryByCustomerId(int customerId) {
+    public IEnumerable<Order> orderHistoryByCustomerId(int customerId) {
       if (doesExistCustomerById(customerId)) {
-        return (IEnumerable<Sorder>) ((DbSet<Customer>)Customers)
+        return (IEnumerable<Order>) ((DbSet<Customer>)Customers)
         .Where(x => x.Id == customerId)
-        .Include(c => c.Sorders).ThenInclude(o => o.OrderItems).ThenInclude(oi => oi.Item)
-        .First().Sorders.ToList();
+        .Include(c => c.Orders).ThenInclude(o => o.OrderItems).ThenInclude(oi => oi.Item)
+        .First().Orders.ToList();
       }
       else {
         throw new ArgumentException("Customer Id not found.");
       }
-      //return from order in context.Sorder where order.CustomerId == customerId select order;
+      //return from order in context.Order where order.CustomerId == customerId select order;
     }
   }
   /// <summary>
   /// Other files are autogenerated by database first approach so
   // This developer written file implements string formatting methods for generated classes.
   /// </summary>
-  public partial class Sorder {
+  public partial class Order {
     /// <summary>
     /// Display an item in the style
     /// Id: {this.Id}, {this.TimePlaced}

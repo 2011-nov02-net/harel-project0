@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace Business
 {
-    public partial class Sorder
+    public partial class Order
     {
-        public Sorder()
+        public Order()
         {
             OrderItems = new HashSet<OrderItem>();
         }
